@@ -1,10 +1,16 @@
 #!/bin/bash
 
+# Function to check DEBUG variable
+is_debug_mode_buildGoProgram() {
+    [ -n "$DEBUG" ] && [ "${DEBUG,,}" != "0" ] && [ "${DEBUG,,}" != "false" ]
+}
+
 # Function to build Go program for multiple platforms
 buildGoProgram() {
+  eval "$(markdown-show-help-registration --minimum-parameters 3)"
   local src_dir="$1"
   local bin_dir="$2"
-  local prog_name="${3:-filescanGo}"  # Default to 'filescanGo' if not provided
+  local prog_name="${3}"  # Default to 'filescanGo' if not provided
   local build_success=0
 
   # Array of platforms: OS, ARCH, EXTENSION
@@ -15,11 +21,15 @@ buildGoProgram() {
     "current::"
   )
 
-  echo "[DEBUG] buildGoProgram: src_dir=$src_dir, bin_dir=$bin_dir, prog_name=$prog_name" >&2
+  if is_debug_mode_buildGoProgram; then
+    echo "[DEBUG] buildGoProgram: src_dir=$src_dir, bin_dir=$bin_dir, prog_name=$prog_name" >&2
+  fi
 
   # Validate source directory
   if [ ! -d "$src_dir" ]; then
-    echo "[DEBUG] buildGoProgram: Source directory $src_dir does not exist" >&2
+    if is_debug_mode_buildGoProgram; then
+      echo "[DEBUG] buildGoProgram: Source directory $src_dir does not exist" >&2
+    fi
     return 1
   fi
 
@@ -28,11 +38,15 @@ buildGoProgram() {
 
   # Preserve current directory
   local current_dir=$(pwd)
-  echo "[DEBUG] buildGoProgram: current_dir=$current_dir" >&2
+  if is_debug_mode_buildGoProgram; then
+    echo "[DEBUG] buildGoProgram: current_dir=$current_dir" >&2
+  fi
 
   # Navigate to source directory
   cd "$src_dir" || return 1
-  echo "[DEBUG] buildGoProgram: Changed to directory: $(pwd)" >&2
+  if is_debug_mode_buildGoProgram; then
+    echo "[DEBUG] buildGoProgram: Changed to directory: $(pwd)" >&2
+  fi
 
   # Loop through platforms
   for platform in "${platforms[@]}"; do
@@ -55,7 +69,9 @@ buildGoProgram() {
       platform_desc="${os} (${arch})"
     fi
 
-    echo "[DEBUG] buildGoProgram: Building for $platform_desc..." >&2
+    if is_debug_mode_buildGoProgram; then
+      echo "[DEBUG] buildGoProgram: Building for $platform_desc..." >&2
+    fi
 
     # Build command
     if [ "$os" == "current" ]; then
@@ -66,23 +82,37 @@ buildGoProgram() {
 
     # Check if build was successful
     if [ $? -eq 0 ] && [ -f "$output_bin" ]; then
-      echo "[INFO] Build successful for $platform_desc: $(realpath "$output_bin")" >&2
+      if is_debug_mode_buildGoProgram; then
+        echo "[INFO] Build successful for $platform_desc: $(realpath "$output_bin")" >&2
+      fi
       ((build_success++))
     else
-      echo "[DEBUG] buildGoProgram: Failed to build for $platform_desc" >&2
+      if is_debug_mode_buildGoProgram; then
+        echo "[DEBUG] buildGoProgram: Failed to build for $platform_desc" >&2
+      fi
     fi
   done
 
   # Return to original directory
   cd "$current_dir" || return 1
-  echo "[DEBUG] buildGoProgram: Returned to directory: $(pwd)" >&2
+  if is_debug_mode_buildGoProgram; then
+    echo "[DEBUG] buildGoProgram: Returned to directory: $(pwd)" >&2
+  fi
 
   # Final status
   if [ $build_success -eq ${#platforms[@]} ]; then
-    echo "[INFO] All builds completed successfully for $prog_name" >&2
+    if is_debug_mode_buildGoProgram; then
+      echo "[INFO] All builds completed successfully for $prog_name" >&2
+    fi
   else
-    echo "[INFO] Completed $build_success/${#platforms[@]} builds for $prog_name" >&2
+    if is_debug_mode_buildGoProgram; then
+      echo "[INFO] Completed $build_success/${#platforms[@]} builds for $prog_name" >&2
+    fi
   fi
 
   return 0
 }
+
+alias grp=gitRelativePath
+
+registerToFunctionsDB
