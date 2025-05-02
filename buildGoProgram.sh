@@ -2,7 +2,7 @@
 
 # Function to check DEBUG variable
 is_debug_mode_buildGoProgram() {
-    [ -n "$DEBUG" ] && [ "${DEBUG,,}" != "0" ] && [ "${DEBUG,,}" != "false" ]
+  [ -n "$DEBUG" ] && [ "${DEBUG,,}" != "0" ] && [ "${DEBUG,,}" != "false" ]
 }
 
 # Function to build Go program for multiple platforms
@@ -10,7 +10,7 @@ buildGoProgram() {
   eval "$(markdown-show-help-registration --minimum-parameters 3)"
   local src_dir="$1"
   local bin_dir="$2"
-  local prog_name="${3}"  # Default to 'filescanGo' if not provided
+  local prog_name="${3}" # Default to 'filescanGo' if not provided
   local build_success=0
 
   # Array of platforms: OS, ARCH, EXTENSION
@@ -51,7 +51,7 @@ buildGoProgram() {
   # Loop through platforms
   for platform in "${platforms[@]}"; do
     # Split platform into OS, ARCH, EXT
-    IFS=':' read -r os arch ext <<< "$platform"
+    IFS=':' read -r os arch ext <<<"$platform"
 
     # Set output binary name
     local output_bin
