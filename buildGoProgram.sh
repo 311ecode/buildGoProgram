@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright © 2025 Imre Toth <tothimre@gmail.com> - Proprietary Software. See LICENSE file for terms.
 
 # Function to check DEBUG variable
 is_debug_mode_buildGoProgram() {
