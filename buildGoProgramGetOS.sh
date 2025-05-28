@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright © 2025 Imre Toth <tothimre@gmail.com> - Proprietary Software. See LICENSE file for terms.
 buildGoProgramGetOS() {
   echo "[DEBUG] buildGoProgramGetOS: Determining OS..." >&2
   local os
