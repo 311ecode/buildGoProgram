@@ -72,12 +72,19 @@ buildGoProgram() {
 
     if is_debug_mode_buildGoProgram; then
       echo "[DEBUG] buildGoProgram: Building for $platform_desc..." >&2
+      echo "[DEBUG] buildGoProgram: Selected binary name: $output_bin" >&2
     fi
 
     # Build command
     if [ "$os" == "current" ]; then
+      if is_debug_mode_buildGoProgram; then
+        echo "[DEBUG] buildGoProgram: Executing: go build -o \"$output_bin\" ." >&2
+      fi
       go build -o "$output_bin" .
     else
+      if is_debug_mode_buildGoProgram; then
+        echo "[DEBUG] buildGoProgram: Executing: GOOS=$os GOARCH=$arch go build -o \"$output_bin\" ." >&2
+      fi
       GOOS=$os GOARCH=$arch go build -o "$output_bin" .
     fi
 
