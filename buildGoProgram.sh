@@ -8,7 +8,7 @@ is_debug_mode_buildGoProgram() {
 
 # Function to build Go program for multiple platforms
 buildGoProgram() {
-  eval "$(markdown-show-help-registration --minimum-parameters 3)"
+  command -v markdown-show-help-registration &>/dev/null && eval "$(markdown-show-help-registration --minimum-parameters 3)"
   local src_dir="$1"
   local bin_dir="$2"
   local prog_name="${3}" # Default to 'filescanGo' if not provided
