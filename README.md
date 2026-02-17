@@ -15,18 +15,23 @@ Builds a Go program for multiple target platforms.
 **Usage:**
 ```bash
 buildGoProgram <source_directory> <binary_directory> [program_name]
+
 ```
 
 **Parameters:**
-- `source_directory` (required): Path to the Go source code directory
-- `binary_directory` (required): Path where compiled binaries will be placed
-- `program_name` (optional): Name of the output binary (defaults to 'filescanGo')
+
+* `source_directory` (required): Path to the Go source code directory
+* `binary_directory` (required): Path where compiled binaries will be placed
+* `program_name` (optional): Name of the output binary (defaults to 'filescanGo')
 
 **Supported Platforms:**
-- Linux (amd64)
-- Darwin/macOS (amd64) 
-- Windows (amd64 with .exe extension)
-- Current platform (native build)
+
+* Linux (amd64)
+* Darwin/macOS (amd64)
+* Darwin/macOS (arm64 - Apple Silicon)
+* Windows (amd64 with .exe extension)
+* Current platform (native build)
+
 
 **Examples:**
 ```bash
