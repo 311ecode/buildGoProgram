@@ -2,9 +2,7 @@
 # Copyright © 2025 Imre Toth <tothimre@gmail.com> - Proprietary Software. See LICENSE file for terms.
 
 # Function to check DEBUG variable
-is_debug_mode_buildGoProgram() {
-  [ -n "$DEBUG" ] && [ "${DEBUG,,}" != "0" ] && [ "${DEBUG,,}" != "false" ]
-}
+
 
 # Function to build Go program for multiple platforms
 buildGoProgram() {
@@ -50,57 +48,9 @@ buildGoProgram() {
     echo "[DEBUG] buildGoProgram: Changed to directory: $(pwd)" >&2
   fi
 
-  # Loop through platforms
-  for platform in "${platforms[@]}"; do
-    # Split platform into OS, ARCH, EXT
-    IFS=':' read -r os arch ext <<<"$platform"
-
-    # Set output binary name
-    local output_bin
-    if [ "$os" == "current" ]; then
-      output_bin="$bin_dir/$prog_name"
-    else
-      output_bin="$bin_dir/$prog_name-${os}-${arch}${ext}"
-    fi
-
-    # Determine platform description
-    local platform_desc
-    if [ "$os" == "current" ]; then
-      platform_desc="current platform"
-    else
-      platform_desc="${os} (${arch})"
-    fi
-
-    if is_debug_mode_buildGoProgram; then
-      echo "[DEBUG] buildGoProgram: Building for $platform_desc..." >&2
-      echo "[DEBUG] buildGoProgram: Selected binary name: $output_bin" >&2
-    fi
-
-    # Build command
-    if [ "$os" == "current" ]; then
-      if is_debug_mode_buildGoProgram; then
-        echo "[DEBUG] buildGoProgram: Executing: go build -o \"$output_bin\" ." >&2
-      fi
-      go build -o "$output_bin" .
-    else
-      if is_debug_mode_buildGoProgram; then
-        echo "[DEBUG] buildGoProgram: Executing: GOOS=$os GOARCH=$arch go build -o \"$output_bin\" ." >&2
-      fi
-      GOOS=$os GOARCH=$arch go build -o "$output_bin" .
-    fi
-
-    # Check if build was successful
-    if [ $? -eq 0 ] && [ -f "$output_bin" ]; then
-      if is_debug_mode_buildGoProgram; then
-        echo "[INFO] Build successful for $platform_desc: $(realpath "$output_bin")" >&2
-      fi
-      ((build_success++))
-    else
-      if is_debug_mode_buildGoProgram; then
-        echo "[DEBUG] buildGoProgram: Failed to build for $platform_desc" >&2
-      fi
-    fi
-  done
+  # Call platform building function
+  buildGoProgram_platforms "$bin_dir" "$prog_name" "$current_dir" "${platforms[@]}"
+  local build_success=$?
 
   # Return to original directory
   cd "$current_dir" || return 1
@@ -121,6 +71,9 @@ buildGoProgram() {
 
   return 0
 }
+
+# Helper function to build for specific platforms
+
 
 alias grp=gitRelativePath
 
