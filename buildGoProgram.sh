@@ -39,4 +39,4 @@ buildGoProgram() {
 }
 
 alias grp=gitRelativePath
-registerToFunctionsDB
+# registerToFunctionsDB
